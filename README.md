@@ -1,31 +1,62 @@
-# Python Chess Engine
+# Chess Engine 
 
-A fully functional chess game developed using **Python** and **Pygame**, featuring complete chess rules, animated gameplay, and an AI opponent using the **Minimax algorithm with Alpha-Beta Pruning**.
+A complete Chess Engine built using **Python** and **Pygame**, featuring a graphical chessboard, legal move generation, advanced chess rules, and an AI opponent powered by the **Negamax algorithm with Alpha-Beta Pruning**. The project demonstrates object-oriented programming, game state management, recursive search algorithms, and multithreading to provide a smooth gameplay experience.
 
 ---
 
 ## Features
 
-- Complete chess gameplay
-- Legal move generation
-- Check detection
+- Interactive chessboard built with Pygame
+- Human vs Human mode
+- Human vs AI mode
+- AI vs AI mode
+- Legal move generation for all pieces
+- Move validation
+- Smooth move animations
+- Move log panel displaying the entire game history
+- Undo moves (`Z`)
+- Reset game (`R`)
+- Background AI computation using multithreading
+- Responsive GUI while the AI is thinking
+
+---
+
+## Chess Rules Implemented
+
+- Standard piece movement
+- Captures
+- Pawn Promotion
+- En Passant
+- Kingside Castling
+- Queenside Castling
+- Check Detection
+- Checkmate Detection
+- Stalemate Detection
+- Pins
+- Double Check Handling
+- Discovered Checks
+
+---
+
+## AI Features
+
+The chess engine includes multiple search algorithms:
+
+- Random Move Selection
+- Minimax
+- Negamax
+- Negamax with Alpha-Beta Pruning
+
+### Board Evaluation
+
+The AI evaluates positions using:
+
+- Material count
+- Piece-square tables (Positional Evaluation)
 - Checkmate detection
 - Stalemate detection
-- Castling (Kingside & Queenside)
-- En Passant
-- Pawn Promotion
-- Undo move functionality
-- Move animations
-- Highlight selected pieces and valid moves
-- AI opponent
-- Random AI
-- Minimax AI
-- NegaMax Search
-- Alpha-Beta Pruning
-- Game restart
-- Human vs Human
-- Human vs AI
-- AI vs AI
+
+This allows the engine to make stronger positional decisions instead of relying solely on material advantage.
 
 ---
 
@@ -33,62 +64,22 @@ A fully functional chess game developed using **Python** and **Pygame**, featuri
 
 - Python 3
 - Pygame
+- Object-Oriented Programming
+- Multithreading
 
 ---
 
 ## Project Structure
 
-```
+```text
 Chess/
 │
-├── ChessMain.py          # Main game loop and UI
-├── ChessEngine.py        # Game state and move generation
+├── ChessMain.py          # Main game loop and GUI
+├── ChessEngine.py        # Chess logic and move generation
 ├── SmartMoveFinder.py    # AI algorithms
-│
-├── images/
-│   ├── wp.png
-│   ├── bp.png
-│   ├── wK.png
-│   ├── bK.png
-│   └── ...
-│
+├── images/               # Chess piece images
 └── README.md
 ```
-
----
-
-## AI Implementations
-
-The project includes multiple AI strategies:
-
-### Random Move AI
-- Chooses a random legal move.
-
-### Material-Based AI
-- Evaluates moves based on material advantage.
-
-### Minimax Algorithm
-- Searches future positions to determine the strongest move.
-
-### NegaMax
-- Simplified implementation of Minimax.
-
-### Alpha-Beta Pruning
-- Optimizes Minimax by pruning unnecessary branches, significantly improving search speed.
-
----
-
-## Chess Rules Implemented
-
-- Standard piece movement
-- Pawn double move
-- Pawn promotion
-- En Passant
-- Kingside castling
-- Queenside castling
-- Check
-- Checkmate
-- Stalemate
 
 ---
 
@@ -96,33 +87,33 @@ The project includes multiple AI strategies:
 
 | Key | Action |
 |------|--------|
-| Mouse | Select and move pieces |
-| Z | Undo last move |
-| R | Restart the game |
+| Left Mouse Click | Select and move a piece |
+| Z | Undo previous move |
+| R | Reset the game |
 
 ---
 
 ## Installation
 
-Clone the repository
+### Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/python-chess-engine.git
+git clone https://github.com/Shaun07a/Chess---Engine.git
 ```
 
-Navigate to the project folder
+### Navigate into the project
 
 ```bash
-cd python-chess-engine
+cd Chess---Engine
 ```
 
-Install dependencies
+### Install dependencies
 
 ```bash
 pip install pygame
 ```
 
-Run the game
+### Run the application
 
 ```bash
 python ChessMain.py
@@ -130,51 +121,83 @@ python ChessMain.py
 
 ---
 
-## Screenshots
+## Search Algorithm
 
-You can add screenshots of the game here.
+The AI searches for the best move using:
 
-Example:
-
+```text
+Negamax
+      │
+      ▼
+Alpha-Beta Pruning
+      │
+      ▼
+Position Evaluation
+      │
+      ▼
+Best Move
 ```
-screenshots/
-├── gameplay.png
-├── checkmate.png
-└── ai-vs-player.png
-```
+
+Alpha-Beta pruning significantly reduces the number of evaluated positions, resulting in faster AI move generation without affecting playing strength.
+
+---
+
+## Recent Improvements
+
+- Added Negamax search algorithm.
+- Added Alpha-Beta pruning for faster move searching.
+- Added positional evaluation using piece-square tables.
+- Implemented move animations.
+- Added a move log panel displaying moves in chess notation.
+- Implemented multithreading so the AI calculates moves in the background without freezing the GUI.
+- Improved overall engine performance and move ordering.
+- Fixed bugs related to castling, en passant, move generation, board synchronization, and AI decision-making.
 
 ---
 
 ## Future Improvements
 
 - Opening Book
-- Piece-Square Tables
-- Better Evaluation Function
 - Iterative Deepening
-- Transposition Tables (Zobrist Hashing)
-- Move Ordering Heuristics
 - Quiescence Search
-- Multiplayer Support
-- PGN Export/Import
-- FEN Support
-- Chess Clock
+- Transposition Tables (Zobrist Hashing)
+- Better Move Ordering (MVV-LVA, Killer Moves, History Heuristic)
 - Adjustable AI Difficulty
+- Time Controls
+- PGN Import/Export
+- FEN Support
+- Threefold Repetition Detection
+- Fifty-Move Rule
+- Draw by Insufficient Material
+
+---
+
+## Screenshots
+
+Add screenshots of the application here.
 
 ---
 
 ## Learning Outcomes
 
-This project demonstrates concepts including:
+This project strengthened my understanding of:
 
 - Object-Oriented Programming
-- Recursion
-- Game Tree Search
-- Minimax Algorithm
-- NegaMax Algorithm
+- Chess Engine Architecture
+- Recursive Algorithms
+- Minimax
+- Negamax
 - Alpha-Beta Pruning
-- Move Generation
-- State Management
-- Pygame Graphics
-- Event Handling
-- Animation
+- Multithreading in Python
+- Game State Management
+- GUI Development using Pygame
+- Performance Optimization
+
+---
+
+## Acknowledgements
+
+This project was built as a practical exploration of chess programming, artificial intelligence, and search algorithms. It provided valuable experience in designing a complete game engine while implementing advanced chess mechanics and AI techniques from scratch.
+
+---
 
