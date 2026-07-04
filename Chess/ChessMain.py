@@ -5,6 +5,7 @@ import os
 import pygame as p
 import ChessEngine
 import SmartMoveFinder
+from multiprocessing import Process, Queue
 
 BOARD_WIDTH = BOARD_HEIGHT = 512 #400 is another option
 MOVE_LOG_PANEL_WIDTH = 250
@@ -50,7 +51,10 @@ def main() :
     playerClicks = [] #keep track of the player clicks(two tuples: [(row,col)])
     gameOver = False
     playerOne = True #If a Human is playing white, then this will be True. If an AI is playing, then this would be False
-    playerTwo = True #Same as above but for black
+    playerTwo = False #Same as above but for black
+    AIThinking = False
+    moveFinderProcess = None
+    moveUndone = False
 
     while running :
         humanTurn = (gs.whiteToMove and playerOne) or (not gs.whiteToMove and playerTwo)
@@ -60,7 +64,7 @@ def main() :
 
             #mouse handler
             elif e.type == p.MOUSEBUTTONDOWN :
-                if not gameOver and humanTurn:
+                if not gameOver:
                     location = p.mouse.get_pos() #(x,y) location of mouse
                     col = location[0]//SQ_SIZE
                     row = location[1]//SQ_SIZE
@@ -71,7 +75,7 @@ def main() :
                         sqSelected = (row, col)
                         playerClicks.append(sqSelected) #append for both 1st and 2nd clicks 
 
-                    if len(playerClicks) == 2 : #after 2nd click
+                    if len(playerClicks) == 2 and humanTurn: #after 2nd click
                         move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)
                         print(move.getChessNotation())
                         for i in range(len(validMoves)):
@@ -88,8 +92,16 @@ def main() :
             elif e.type == p.KEYDOWN : 
                 if e.key == p.K_z : #undo when 'z' is pressed
                     gs.undoMove()
+                    sqSelected = ()
+                    playerClicks = []
                     moveMade = True
                     animate = False
+                    gameOver = False
+                    if AIThinking:
+                        moveFinderProcess.terminate()
+                        AIThinking = False
+                    moveUndone = True
+
                 if e.key == p.K_r: #reset the board when 'r' is pressed
                     gs = ChessEngine.GameState()
                     validMoves = gs.getValidMoves()
@@ -97,16 +109,33 @@ def main() :
                     playerClicks = []
                     moveMade = False
                     animate = False
+                    gameOver = False
+                    if AIThinking:
+                        moveFinderProcess.terminate()
+                        AIThinking = False
+                    moveUndone = True
 
 
         #AI move finder
-        if not gameOver and not humanTurn:
-            AImove = SmartMoveFinder.findBestMove(gs, validMoves)
-            if AImove is None:
-                AImove = SmartMoveFinder.findRandomMove(validMoves)
-            gs.makeMove(AImove)
-            moveMade = True
-            animate = True
+        if not gameOver and not humanTurn and not moveUndone:
+            if not AIThinking:
+                AIThinking = True
+                print("thinking...")
+                returnQueue = Queue() #used to pass data between threads
+                moveFinderProcess = Process(target=SmartMoveFinder.findBestMove, args=(gs, validMoves, returnQueue))
+                moveFinderProcess.start() #call findBestMove(gs, validMoves, returnQueue)
+                
+
+            if not moveFinderProcess.is_alive():
+                print("done thinking")
+                moveFinderProcess.join()
+                AImove = returnQueue.get()
+                if AImove is None:
+                    AImove = SmartMoveFinder.findRandomMove(validMoves)
+                gs.makeMove(AImove)
+                moveMade = True
+                animate = True
+                AIThinking = False
 
         if moveMade :
             if animate :
@@ -114,6 +143,7 @@ def main() :
             validMoves = gs.getValidMoves()
             moveMade = False
             animate = False
+            moveUndone = False
                 
         drawGameState(screen,gs,validMoves,sqSelected, moveLogFont)
 
